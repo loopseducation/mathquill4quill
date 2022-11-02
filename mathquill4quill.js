@@ -40,8 +40,7 @@ window.mathquill4quill = function(dependencies) {
     return /^\\[A-Za-z]+$/.test(operator);
   }
 
-  function enableMathQuillFormulaAuthoring(quill, options) {
-    options = options || {};
+  function enableMathQuillFormulaAuthoring(quill, options = { syncInput: false }) {
 
     function areAllDependenciesMet() {
       if (!Quill) {
@@ -147,9 +146,11 @@ window.mathquill4quill = function(dependencies) {
           mathQuillConfig
         );
 
-        const cachedLatex = getCacheItem(cacheKey);
-        if (cachedLatex) {
-          mqField.latex(cachedLatex);
+        if (!options.syncInput) {
+          const cachedLatex = getCacheItem(cacheKey);
+          if (cachedLatex) {
+            mqField.latex(cachedLatex);
+          }
         }
 
         saveButton.addEventListener("click", () => {
@@ -171,7 +172,7 @@ window.mathquill4quill = function(dependencies) {
       return {
         render() {
           if (mqInput != null) {
-            return;
+            return mqField;
           }
 
           const latexInput = getLatexInput();
@@ -370,6 +371,9 @@ window.mathquill4quill = function(dependencies) {
 
       if (isFormulaTooltipActive) {
         const mqField = mqInput.render();
+        if (options.syncInput) {
+          mqField.latex(getLatexInput().value);
+        }
         operatorButtons.render(mqField);
         historyListButtons.render(mqField);
       } else {

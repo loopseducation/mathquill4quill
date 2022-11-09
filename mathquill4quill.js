@@ -192,10 +192,10 @@ window.mathquill4quill = function(dependencies) {
             const { text, url } = options.katexLink;
 
             documentLinkContainer = document.createElement('div');
+            documentLinkContainer.setAttribute('class', 'mathquill4quill-katex-support-document-link-container')
             const documentLink = document.createElement('a');
             documentLink.innerHTML = text;
             documentLink.setAttribute('href', '#');
-            documentLink.setAttribute('class', 'mathquill4quill-katex-support-document-link');
 
             let documentLinkWindow;
             documentLink.onclick = (event) => {

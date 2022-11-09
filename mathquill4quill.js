@@ -117,6 +117,7 @@ window.mathquill4quill = function(dependencies) {
       const cacheKey = options.cacheKey || "__mathquill4quill_cache__";
       let mqInput = null;
       let mqField = null;
+      let documentLinkContainer = null;
       let latexInputStyle = null;
 
       function applyMathquillInputStyles(mqInput) {
@@ -187,7 +188,27 @@ window.mathquill4quill = function(dependencies) {
           mqField = syncMathquillToQuill(latexInput, saveButton);
           autofocusFormulaField(mqField);
 
+          if (options.katexLink) {
+            const { text, url } = options.katexLink;
+
+            documentLinkContainer = document.createElement('div');
+            const documentLink = document.createElement('a');
+            documentLink.innerHTML = text;
+            documentLink.setAttribute('href', '#');
+            documentLink.setAttribute('class', 'mathquill4quill-katex-support-document-link');
+
+            let documentLinkWindow;
+            documentLink.onclick = (event) => {
+              event.preventDefault();
+              documentLinkWindow = window.open(url, '_blank', 'height=1024,width=720');
+            };
+            documentLinkContainer.appendChild(documentLink);
+          }
+
           insertAfter(mqInput, latexInput);
+          if (documentLinkContainer) {
+            insertAfter(documentLinkContainer, mqInput);
+          }
           return mqField;
         },
         destroy() {
@@ -201,6 +222,10 @@ window.mathquill4quill = function(dependencies) {
 
           mqInput.remove();
           mqInput = null;
+          if (documentLinkContainer) {
+            documentLinkContainer.remove();
+            documentLinkContainer = null;
+          }
         }
       };
     }
